@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<hibernate-mapping>
+
+<class name="airshowscheduler.Airports" table="airports">
+<id name="AirportID" column="AirPortID" type="int" >
+	<generator class = "native"/>
+	</id>
+	
+<property name="airportName" column="AirportName" type="string" />
+<property name="airportRunwayLen" column="AirportRunwayLength" type="int" />
+<property name="airportFuel" column="AirportFuelAvailable" type="string" />
+<property name="airportCode" column="AirportCode" type="string" />
+</class>
+
+<class name="airshowscheduler.AirShowActs" table="airshowacts">
+<id name="actID" column="ActID" type="int" >
+	<generator class = "native"/>
+	</id>
+	
+<property name="actName" column="ActName" type="string" />
+<property name="actRunway" column="ActRunwayRequired" type="int" />
+<property name="actFuel" column="ActFuelType" type="string" />
+<property name="actCost" column="ActCost" type="int" />
+</class>
+
+<class name="airshowscheduler.AirShows" table="airshows">
+<id name="showID" column="AirShowID" type="int" >
+	<generator class = "native"/>
+	</id>
+	
+<property name="showName" column="AirshowName" type="string" />
+<property name="showAirport" column="AirShowAirportID" type="int" />
+<property name="showDate" column="AirShowDate" type="LocalDate" />
+</class>
+
+<class name="airshowscheduler.Performances" table="performances">
+<id name="perfID" column="PerformanceId" type="int" >
+	<generator class = "native"/>
+	</id>
+	
+<property name="perfAirShowId" column="PerformanceAirShowID" type="int" />
+<property name="perfActId" column="PerformanceActID" type="int" />
+
+</class>
+</hibernate-mapping>
