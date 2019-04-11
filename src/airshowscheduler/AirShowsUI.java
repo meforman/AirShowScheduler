@@ -19,13 +19,14 @@ public class AirShowsUI {
 				+ "\n 1. Add an Air Show to the list " 
 				+ "\n 2. View the list of Shows "
 				+ "\n 3. View list of Shows with Performances  "
-				+ "\n 4. View and Delete a Show from the list  "
-				+ "\n 5. Back to Main Menu.";
+				+ "\n 4. Edit an Air Show  "
+				+ "\n 5. View and Delete a Show from the list  "
+				+ "\n 6. Back to Main Menu.";
 		int userPrompt = 0;
 		List<Airports> theList = AirShowBackEnd.listAirports();
 		List<AirShowActs> actList = AirShowBackEnd.listActs();
 		
-		do { userPrompt = AirShowSchedulerMain.displayMenu(menuText, 5);
+		do { userPrompt = AirShowSchedulerMain.displayMenu(menuText, 6);
 
 			if (userPrompt == 1) {
 				
@@ -41,7 +42,6 @@ public class AirShowsUI {
 			} 
 
 			if (userPrompt == 2) {
-				
 				List<AirShows> showList = AirShowBackEnd.listShows();
 				displayShows(showList, theList);
 			} 
@@ -56,10 +56,16 @@ public class AirShowsUI {
 			if (userPrompt == 4) {
 				List<AirShows> showList = AirShowBackEnd.listShows();
 				displayShows(showList, theList);
+				editAirShows(showList, theList);
+			}
+			
+			if (userPrompt == 5) {
+				List<AirShows> showList = AirShowBackEnd.listShows();
+				displayShows(showList, theList);
 				deleteShow(showList);
 			} 
 		} 
-		while (userPrompt != 5); // End menu processing
+		while (userPrompt != 6); // End menu processing
 		System.out.println("Returning to Main Menu...");
 		return;
 	}	
@@ -104,6 +110,15 @@ public class AirShowsUI {
 		}
 	}
 	
+	public static void displaySingleShow(AirShows[] showArray, List<Airports> airportList, int x) {
+		System.out.println("\nHere is a list of all Air Shows. ");
+		System.out.printf("%-14s%-43s%-40s%s", "Num.", "Show Name", "Show Airport", "Show Date.\n");
+		System.out.printf("%-7s%-43s%-45s%s", "----", "--------------------------------", "--------------------------------", "--------------\n");
+		
+			System.out.printf("%-7s%-43s%-47s%s", " ", showArray[x].getShowName(),
+					findAirportName(airportList, showArray[x].getShowAirport()), showArray[x].getShowDate() + "\n");
+		}
+	
 	/** Method that lists Airshows on the schedule, and any acts with each of them
 	 * @param theList List with list of airshows in the database
 	 * @param airportList List with name of airports for display
@@ -131,6 +146,49 @@ public class AirShowsUI {
 				showCount++;
 			}
 		}
+	}
+	
+	public static void editAirShows(List<AirShows> showList, List<Airports> theList) {
+		String updateTable = "AirShows";
+		String updateRecord = "AirShowID";
+		int badChoice = 0;
+		int userChoice = 0;
+		
+		if (showList.size() < 1) {
+			System.out.println("There are no Air Shows to edit.");
+			return ;
+		}
+		do {
+			userChoice = AirShowSchedulerMain.getInt("Choose an Air Show to Edit: ", "");
+			if (userChoice < 1 || userChoice > showList.size()) {
+			System.out.println("Please choose a number between 1 and " + showList.size() + ".");
+			badChoice = 1;
+				} // End if
+			else
+				badChoice = 0;
+		} 
+		while (badChoice == 1);
+		AirShows[] showArray = showList.toArray(new AirShows[showList.size()]);
+		int showToEdit = userChoice - 1;
+		displaySingleShow(showArray, theList, showToEdit);
+		String menuText = "Select a field to edit: \n 1. Air Show Name \n 2. Show Airport  \n 3. Air Show Date";
+		userChoice = AirShowSchedulerMain.displayMenu(menuText, 3);
+		
+		AirShows updatedShow = new AirShows(showArray[showToEdit].getShowID(), showArray[showToEdit].getShowName(), 
+				showArray[showToEdit].getShowAirport(), showArray[showToEdit].getShowDate());
+		String updateFieldString = "null";
+		int updateRecordID = updatedShow.getShowID();
+		if (userChoice == 1) 
+			updateFieldString = "AirshowName = '" + getShowName();
+		
+		if (userChoice == 2) 
+			updateFieldString = "AirShowAirportID = '" + getShowApId(theList);
+		
+		if (userChoice == 3) 
+			updateFieldString = "AirShowDate = '" + getShowDate();
+		
+		AirShowBackEnd.updateRecord(updateTable, updateFieldString, updateRecord, updateRecordID);
+		return;
 	}
 	
 	/** Method to retrieve the name of the airport from its ID

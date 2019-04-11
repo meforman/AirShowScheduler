@@ -15,11 +15,12 @@ public class AirportsUI {
 		String menuText = "Enter your choice: "
 				+ "\n 1. Add an Airport to the list " 
 				+ "\n 2. View the list of Airports " 
-				+ "\n 3. View and Delete an Airport from the list " 
-				+ "\n 4. Return to Main Menu.";
+				+ "\n 3. Edit Airport Info"
+				+ "\n 4. View and Delete an Airport from the list " 
+				+ "\n 5. Return to Main Menu.";
 		int userPrompt = 0;
 
-		do { userPrompt = AirShowSchedulerMain.displayMenu(menuText, 4);
+		do { userPrompt = AirShowSchedulerMain.displayMenu(menuText, 5);
 
 			if (userPrompt == 1) {
 				String airportName = getAirportName();
@@ -35,19 +36,38 @@ public class AirportsUI {
 				List<Airports> airportList = AirShowBackEnd.listAirports();
 				displayAirports(airportList);
 			} 
-
+			
 			if (userPrompt == 3) {
+				List<Airports> airportList = AirShowBackEnd.listAirports();
+				displayAirports(airportList);
+				editAirport(airportList);
+			} 
+
+			if (userPrompt == 4) {
 				List<Airports> airportList = AirShowBackEnd.listAirports();
 				displayAirports(airportList);
 				deleteAirport(airportList);
 			} 
 		} 
-		while (userPrompt != 4); // End menu processing
+		while (userPrompt != 5); // End menu processing
 		System.out.println("Returning to Main Menu...");
 		return;
 	} //manageAirports
 
-
+	/** method to display the list of airports in formatted text
+	 * @param theList of airports retrieved from the database
+	 */
+	public static void displaySingleAirports(Airports[] airportArray, int x) {
+			System.out.println("\nAirport Information. \n");
+			System.out.printf("%-7s%-22s%-34s%-15s%s", "Num.", "Airport Code", "Airport Name", "Fuel Avail",
+					"Runway Length\n");
+			System.out.printf("%-7s%-16s%-40s%-15s%s", "----", "------------", "------------------------", "----------",
+					"--------------\n");
+				System.out.printf("%-11s%-12s%-44s%-16s%s", " ", airportArray[x].getAirportCode(),
+						airportArray[x].getAirportName(), airportArray[x].getAirportFuel(), airportArray[x].getAirportRunwayLen() + "\n");
+			}
+		
+	
 	/** method to display the list of airports in formatted text
 	 * @param theList of airports retrieved from the database
 	 */
@@ -76,7 +96,7 @@ public class AirportsUI {
 		int airportT = 0;
 		String airportName = null;
 		do {
-			airportName = AirShowSchedulerMain.getStrings("Enter the Airport Name. (Limit 25 Chars.) ", "Name: ");
+			airportName = AirShowSchedulerMain.getStrings("Enter the Airport Name. (Limit 45 Chars.) ", "Name: ");
 			if (airportName.length() < 1 || airportName.length() > 45) {
 				System.out.println("You must enter a name. It may not be blank , nor exceed 45 chars.");
 				airportT = 0;
@@ -148,6 +168,57 @@ public class AirportsUI {
 		} // end do
 		while (airportT == 0);
 		return airportRunwayLen;
+	}
+	
+	/**method to list airports for the user to choose which to edit, select which field to edit, get new
+	 * information, and send to the back end for updating.
+	 * @param airportList list of airports to display for the user to choose which one to delete
+	 */
+	public static void editAirport(List<Airports> airportList) {
+		String updateTable = "Airports";
+		String updateRecord = "AirPortID";
+		int badChoice = 0;
+		int userChoice = 0;
+		
+		if (airportList.size() < 1) {
+			System.out.println("There are no airports to edit.");
+			return ;
+		}
+		do {
+			userChoice = AirShowSchedulerMain.getInt("Choose an Airport to Edit: ", "");
+			if (userChoice < 1 || userChoice > airportList.size()) {
+			System.out.println("Please choose a number between 1 and " + airportList.size() + ".");
+			badChoice = 1;
+				} // End if
+			else
+				badChoice = 0;
+		} 
+		while (badChoice == 1);
+		Airports[] airportArray = airportList.toArray(new Airports[airportList.size()]);
+		int airportToEdit = userChoice - 1;
+		displaySingleAirports(airportArray, airportToEdit);
+		String menuText = "Select a field to edit: \n 1. Airport Code \n 2. Airport Name \n 3. Airport Fuel Availability"
+				+ "\n 4. Airport Runway Length \n 5. Exit Editing Airport";
+		userChoice = AirShowSchedulerMain.displayMenu(menuText, 5);
+		
+		Airports updatedAirport = new Airports(airportArray[airportToEdit].getAirportID(), airportArray[airportToEdit].getAirportName(), 
+				airportArray[airportToEdit].getAirportRunwayLen(), airportArray[airportToEdit].getAirportFuel(), airportArray[airportToEdit].getAirportCode());
+		String updateFieldString = "null";
+		int updateRecordID = updatedAirport.getAirportID();
+		if (userChoice == 2) 
+			updateFieldString = "AirportName = '" + getAirportName();
+		
+		if (userChoice == 4) 
+			updateFieldString = "AirportRunwayLength = '" + getAirportRunway();
+		
+		if (userChoice == 3) 
+			updateFieldString = "AirportFuelAvailable = '" + getAirportFuel();
+		
+		if (userChoice == 1) {
+			updateFieldString = "AirportCode = '" + getAirportCode();
+		}
+		AirShowBackEnd.updateRecord(updateTable, updateFieldString, updateRecord, updateRecordID);
+		return;
 	}
 	
 	/**method to list airports for the user to choose which to delete

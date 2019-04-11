@@ -30,6 +30,14 @@ public class Airports {
 	
 	public Airports() {}
 	
+	public Airports(int airportID, String apName, int apRunLen, String apFuel, String apCode) {
+		this.setAirportID(airportID);
+		this.setAirportCode(apCode);
+		this.setAirportName(apName);
+		this.setAirportFuel(apFuel);
+		this.setAirportRunwayLen(apRunLen);
+	}
+	
 	public Airports(String apName, int apRunLen, String apFuel, String apCode) {
 		this.setAirportCode(apCode);
 		this.setAirportName(apName);

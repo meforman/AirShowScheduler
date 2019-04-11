@@ -15,8 +15,9 @@ public class AirShowActsUI {
 		String menuText = "Enter your choice: "
 				+ "\n 1. Add an Act to the list " 
 				+ "\n 2. View the list of Acts "
-				+ "\n 3. View and Delete an Act from the list  " 
-				+ "\n 4. Back to Main Menu.";
+				+ "\n 3. Edit an Air Show Act "
+				+ "\n 4. View and Delete an Act from the list  " 
+				+ "\n 5. Back to Main Menu.";
 		
 		int userPrompt = 0;
 
@@ -39,10 +40,16 @@ public class AirShowActsUI {
 			if (userPrompt == 3) {
 				List<AirShowActs> actList = AirShowBackEnd.listActs();
 				displayActs(actList);
-				deleteAct(actList);
+				editAirshowAct(actList);
 			} 
+			
+			if (userPrompt == 4) {
+				List<AirShowActs> actList = AirShowBackEnd.listActs();
+				displayActs(actList);
+				deleteAct(actList);
+			}
 		} 
-		while (userPrompt != 4); // End menu processing
+		while (userPrompt != 5); // End menu processing
 		System.out.println("Returning to Main Menu...");
 		return;
 	}
@@ -128,6 +135,63 @@ public class AirShowActsUI {
 				airshowCount++;
 			}
 		}
+	}
+	
+	public static void displaySingleActs(AirShowActs[] actArray, int x) {
+		System.out.println("\nSelect field to edit: \n");
+		System.out.printf("%-14s%-38s%-14s%-16s%s", "Num.", "Act Name", "Act Cost", "Act Fuel Req.",
+				"Runway Length\n");
+		System.out.printf("%-7s%-42s%-16s%-16s%s", "----", "--------------------------------", "--------------", "--------------",
+				"---------------\n");
+			System.out.printf("%-7s%-47s%-15s%-16s%s", " ", actArray[x].getActName(),
+					actArray[x].getActCost(), actArray[x].getActFuel(), actArray[x].getActRunway() + "\n");
+		}
+	
+	public static void editAirshowAct(List<AirShowActs> actList) {
+		String updateTable = "AirShowActs";
+		String updateRecord = "ActID";
+		int badChoice = 0;
+		int userChoice = 0;
+		
+		if (actList.size() < 1) {
+			System.out.println("There are no Air Show Acts to edit.");
+			return ;
+		}
+		do {
+			userChoice = AirShowSchedulerMain.getInt("Choose an Air Show Act to Edit: ", "");
+			if (userChoice < 1 || userChoice > actList.size()) {
+			System.out.println("Please choose a number between 1 and " + actList.size() + ".");
+			badChoice = 1;
+				} // End if
+			else
+				badChoice = 0;
+		} 
+		while (badChoice == 1);
+		AirShowActs[] actArray = actList.toArray(new AirShowActs[actList.size()]);
+		int actToEdit = userChoice - 1;
+		displaySingleActs(actArray, actToEdit);
+		String menuText = "Select a field to edit: \n 1. Act Name \n 2. Act Cost \n 3. Act Fuel Requirement"
+				+ "\n 4. Act Runway Requirement  \n 5. Exit Editing Air Show Act";
+		userChoice = AirShowSchedulerMain.displayMenu(menuText, 5);
+		
+		AirShowActs updatedAct = new AirShowActs(actArray[actToEdit].getActID(), actArray[actToEdit].getActName(), 
+				actArray[actToEdit].getActRunway(), actArray[actToEdit].getActFuel(), actArray[actToEdit].getActCost());
+		String updateFieldString = "null";
+		int updateRecordID = updatedAct.getActID();
+		if (userChoice == 1) 
+			updateFieldString = "ActName = '" + getActName();
+		
+		if (userChoice == 4) 
+			updateFieldString = "ActRunwayRequired = '" + AirportsUI.getAirportRunway();
+		
+		if (userChoice == 3) 
+			updateFieldString = "ActFuelType = '" + getActFuel();
+		
+		if (userChoice == 2) {
+			updateFieldString = "ActCost = '" + getActCost();
+		}
+		AirShowBackEnd.updateRecord(updateTable, updateFieldString, updateRecord, updateRecordID);
+		return;
 	}
 	
 	/**method to list air show acts for the user to choose which to delete

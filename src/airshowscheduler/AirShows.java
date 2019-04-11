@@ -40,6 +40,13 @@ public class AirShows {
 		this.setShowAirport(asApId);
 		this.setShowDate(asDate);
 	}
+	
+	public AirShows(int showId, String asName, int asApId, LocalDate asDate) {
+		this.setShowID(showId);
+		this.setShowName(asName);
+		this.setShowAirport(asApId);
+		this.setShowDate(asDate);
+	}
 
 	public int getShowID() {
 		return showID;

@@ -27,6 +27,12 @@ public class Performances {
 		this.setPerfAirShowId(showId);
 		this.setPerfActId(actId);
 	}
+	
+	public Performances(int perfID, int showId, int actId) {
+		this.setPerfID(perfID);
+		this.setPerfAirShowId(showId);
+		this.setPerfActId(actId);
+	}
 
 	public int getPerfID() {
 		return perfID;

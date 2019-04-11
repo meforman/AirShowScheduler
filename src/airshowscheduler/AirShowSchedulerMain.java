@@ -9,7 +9,10 @@ import java.util.Scanner;
  */
 public class AirShowSchedulerMain {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) { 
+	
+	
+	
 		String menuString = "Enter your choice: " 
 				+ "\n 1. Manage Airports. " 
 				+ "\n 2. Manage Air Show Acts. "

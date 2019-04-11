@@ -42,6 +42,14 @@ public class AirShowActs  {
 		this.setActFuel(actfuel);
 		this.setActCost(actcost);
 	}
+	
+	public AirShowActs (int actId, String actname, int actrun, String actfuel, int actcost) {
+		this.setActID(actId);
+		this.setActName(actname);
+		this.setActRunway(actrun);
+		this.setActFuel(actfuel);
+		this.setActCost(actcost);
+	}
 
 	public int getActID() {
 		return actID;

@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 
 /**
@@ -73,6 +74,24 @@ public class AirShowBackEnd {
 			goTrans = session.beginTransaction();
 			session.save(thePerf);
 			goTrans.commit();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			factory.close();
+		}
+	}
+	
+	public static void updateRecord(String updateTable, String updateFieldString, String updateRecord, int updateRecordID) {
+		String sendUpdate = "null";
+		sendUpdate = "update " + updateTable + " set " + updateFieldString + "' where " + updateRecord + "= '" + updateRecordID +"'";
+		SessionFactory factory = new Configuration().configure("/resources/hibernate.cfg.xml")
+				.addAnnotatedClass(Airports.class).buildSessionFactory();
+		Session session = factory.getCurrentSession();
+		try {
+			session.beginTransaction();
+			session.createQuery(sendUpdate).executeUpdate();
+			session.getTransaction().commit();
+			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} finally {

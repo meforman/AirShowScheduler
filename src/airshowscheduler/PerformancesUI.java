@@ -16,12 +16,13 @@ public class PerformancesUI {
 		List<Airports> apList = AirShowBackEnd.listAirports();
 		List<Performances> picPerfs = AirShowBackEnd.listPerfs();
 		String menuText = "Enter your choice: "
+				+ "\n Note: To change a performance, delete and re-enter."
 				+ "\n 1. Add a Performance to the list " 
 				+ "\n 2. View the list of Performances "
-				+ "\n 3. View and Delete a Performance from the list  " 
+				+ "\n 3. View and Delete a Performance from the list  "
 				+ "\n 4. Back to Main Menu.";
 		
-		do { userPrompt = AirShowSchedulerMain.displayMenu(menuText, 4);
+		do { userPrompt = AirShowSchedulerMain.displayMenu(menuText, 5);
 
 			if (userPrompt == 1) {
 				
